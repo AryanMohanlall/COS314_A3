@@ -75,7 +75,7 @@ public class SyntaxTree {
 
     public void buildSyntaxTree(long seed){
         Random random = new Random(seed);
-        int length = 10;
+        int length = random.nextInt(100);
         
         for(int i=0; i<length; i++){
             float nodeType = random.nextFloat(0f, 1f);
