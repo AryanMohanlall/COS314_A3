@@ -1,8 +1,8 @@
 public class Node {
-    public Node left;
-    public Node right;
-    public FunctionSet function;
-    public float terminal;
+    private Node left;
+    private Node right;
+    private FunctionSet function;
+    private float terminal;
 
     public Node(Node left, Node right, FunctionSet fs, float t){
         this.left = left;
