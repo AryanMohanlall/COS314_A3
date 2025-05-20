@@ -13,7 +13,8 @@ class Main{
         Node b = new VariableNode(null, null, 'b');
         Node c = new VariableNode(null, null, 'c');
 
-        SyntaxTree tree = new SyntaxTree(divide);
+        long seed = System.nanoTime();
+        SyntaxTree tree = new SyntaxTree(seed);
 
         //tree.append(one, tree.root);
         //tree.append(minus, tree.root);
@@ -21,7 +22,7 @@ class Main{
         //tree.append(plus, tree.root);
         //tree.append(a, tree.root);
 
-        tree.buildSyntaxTree(System.currentTimeMillis());
+        //tree.buildSyntaxTree(System.currentTimeMillis());
 
         System.out.println(tree.interpret(tree.getRoot(), ""));
 

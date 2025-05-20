@@ -19,6 +19,7 @@ public class SyntaxTree {
     public SyntaxTree(long seed){
         Random random = new Random(seed);
         int randomFunc = random.nextInt(functionSet.length);
+        System.out.println(randomFunc);
         this.root = new FunctionNode(null, null, functionSet[randomFunc]);
     }
 
@@ -79,7 +80,7 @@ public class SyntaxTree {
         
         for(int i=0; i<length; i++){
             float nodeType = random.nextFloat(0f, 1f);
-            System.out.println(nodeType);
+            //System.out.println(nodeType);
 
             if(nodeType < 0.3f){
                 Node n = new FunctionNode(null, null, functionSet[random.nextInt(functionSet.length)]);

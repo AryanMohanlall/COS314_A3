@@ -20,7 +20,7 @@ class FunctionNode extends Node{
     }
 
     public String toString(){
-        String res;
+        String res = "";
         switch (function) {
             case FunctionSet.PLUS:
                 res = "+";
@@ -36,10 +36,6 @@ class FunctionNode extends Node{
                 break;
             case FunctionSet.POWER:
                 res = "^";
-
-            default:
-                res = "";
-                break;
         }
         return res;
     }
