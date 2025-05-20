@@ -1,8 +1,10 @@
 import java.util.Random;
+import java.util.Vector;
 
 public class SyntaxTree {
     public Node root;
     public String funcString;
+    public Node[] equation;
 
     public final FunctionSet[] functionSet = {FunctionSet.PLUS, FunctionSet.MINUS, FunctionSet.DIVIDE, FunctionSet.MULTIPLY, FunctionSet.POWER};
 
@@ -19,7 +21,6 @@ public class SyntaxTree {
     public SyntaxTree(long seed){
         Random random = new Random(seed);
         int randomFunc = random.nextInt(functionSet.length);
-        System.out.println(randomFunc);
         this.root = new FunctionNode(null, null, functionSet[randomFunc]);
     }
 
@@ -48,7 +49,7 @@ public class SyntaxTree {
         append(newNode, cur.getLeft());
         append(newNode, cur.getRight());
 
-    }
+    }// problem here sometimes
 
 
 
@@ -58,6 +59,7 @@ public class SyntaxTree {
         reString = "";
         reString += interpret(node.getLeft(), reString);
         reString += node.toString() + " ";
+        //stack.addElement(node);
         reString += interpret(node.getRight(), reString);
 
         return reString;
@@ -76,7 +78,7 @@ public class SyntaxTree {
 
     public void buildSyntaxTree(long seed){
         Random random = new Random(seed);
-        int length = random.nextInt(100);
+        int length = random.nextInt(5,100);
         
         for(int i=0; i<length; i++){
             float nodeType = random.nextFloat(0f, 1f);
@@ -87,15 +89,15 @@ public class SyntaxTree {
                 append(n, root);
             }//add function node
 
-            if(nodeType < 0.3f && nodeType > 0.6f){
-                Node n = new TerminalNode(null, null, random.nextFloat(0, 6969));
+            if(nodeType > 0.3f && nodeType < 0.6f){
+                Node n = new TerminalNode(null, null, random.nextFloat(0, 10));
                 append(n, root);
             }//add terminal node
 
-            if(nodeType > 0.6f){
-                Node n= new VariableNode(null, null, (char)(random.nextInt(26) + 'a'));
+/*             if(nodeType > 0.6f){
+                Node n = new VariableNode(null, null, (char)(random.nextInt(26) + 'a'));
                 append(n, root);
-            }//add variable node
+            }//add variable node */
         }
     }
 
@@ -107,8 +109,52 @@ public class SyntaxTree {
         return vString.matches("[-+]?[0-9]*\\.?[0-9]+");
     }
 
-    public boolean validTree(Node cur, int fNodes, int tNodes){
-        boolean res = true;
+    public float compute(){
+        Vector<String> stack = new Vector<>();
+        funcString = interpret(root, "");
+        String equationStr[] = funcString.split(" ");
+
+        stack.addElement(equationStr[0]);
+        for(int i=1; i<equationStr.length; i++){
+            stack.addElement(equationStr[i]);
+
+            if(stack.size() == 3){
+                float num1 = Float.parseFloat(stack.get(0));
+                String op = stack.get(1);
+                float num2 = Float.parseFloat((stack.get(2)));
+
+                String res = Float.toString(calcOfStringOp(num1, op, num2));
+                stack.set(0, res);
+                stack.remove(1);
+                stack.remove(1);
+            }
+        }
+
+        return Float.parseFloat(stack.get(0));
+    }
+
+    public float calcOfStringOp(float num1, String op, float num2){
+        float res = 0;
+
+        if(op.charAt(0) == '+'){
+            res = num1 + num2;
+        }
+
+        if(op.charAt(0) == '-'){
+            res = num1 - num2;
+        }
+
+        if(op.charAt(0) == '*'){
+            res = num1 * num2;
+        }
+
+        if(op.charAt(0) == '/'){
+            res = num1 / num2;
+        }
+
+        if(op.charAt(0) == '^'){
+            res = (float)Math.pow(num1, num2);
+        }
         return res;
     }
 }

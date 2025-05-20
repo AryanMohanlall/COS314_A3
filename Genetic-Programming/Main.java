@@ -22,9 +22,11 @@ class Main{
         //tree.append(plus, tree.root);
         //tree.append(a, tree.root);
 
-        //tree.buildSyntaxTree(System.currentTimeMillis());
+        tree.buildSyntaxTree(seed);
 
         System.out.println(tree.interpret(tree.getRoot(), ""));
+
+        System.out.println(tree.compute());
 
     }
 }
