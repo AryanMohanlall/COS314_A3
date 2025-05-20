@@ -10,6 +10,6 @@ class Main{
         tree.append(multiply, tree.getRoot());
         tree.append(minus, tree.getRoot());
 
-        tree.interpret(tree.getRoot());
+        System.out.println(tree.interpret(tree.getRoot(), ""));
     }
 }

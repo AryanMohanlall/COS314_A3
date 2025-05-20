@@ -31,11 +31,14 @@ public class SyntaxTree {
 
 
 
-    public void interpret(Node node){
-        if(node == null) return;
+    public String interpret(Node node, String reString){
+        if(node == null) return "";
 
-        interpret(node.getLeft());
-        System.out.println(node.toString());
-        interpret(node.getRight());
+        reString = "";
+        reString += interpret(node.getLeft(), reString);
+        reString += node.toString() + " ";
+        reString += interpret(node.getRight(), reString);
+
+        return reString;
     }
 }
