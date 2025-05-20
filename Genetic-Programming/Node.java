@@ -1,14 +1,10 @@
-public class Node {
+abstract class Node {
     private Node left;
     private Node right;
-    private FunctionSet function;
-    private float terminal;
 
-    public Node(Node left, Node right, FunctionSet fs, float t){
+    public Node(Node left, Node right){
         this.left = left;
         this.right = right;
-        this.function = fs;
-        this.terminal = t;
     }
 
     public Node getLeft(){
@@ -19,14 +15,6 @@ public class Node {
         return this.right;
     }
 
-    public FunctionSet getFuncion(){
-        return this.function;
-    }
-
-    public float getTerminal(){
-        return this.terminal;
-    }
-
     public void setLeft(Node l){
         this.left = l;
     }
@@ -35,12 +23,4 @@ public class Node {
         this.right = r;
     }
 
-    public void setFunction(FunctionSet f){
-        this.function = f;
-    }
-
-    public void setTerminal(float t){
-        this.terminal = t;
-    }
-
-}
+};
