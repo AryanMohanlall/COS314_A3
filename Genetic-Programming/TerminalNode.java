@@ -17,5 +17,9 @@ public class TerminalNode extends Node{
     public void setValue(float val){
         this.value = val;
     }
-    
+
+    public String toString(){
+        return Float.toString(this.value);
+    }
+
 }

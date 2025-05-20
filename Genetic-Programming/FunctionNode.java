@@ -19,4 +19,29 @@ class FunctionNode extends Node{
         this.function = function;
     }
 
+    public String toString(){
+        String res;
+        switch (function) {
+            case FunctionSet.PLUS:
+                res = "+";
+                break;
+            case FunctionSet.MINUS:
+                res = "-";
+                break;
+            case FunctionSet.MULTIPLY:
+                res = "*";
+                break;
+            case FunctionSet.DIVIDE:
+                res = "/";
+                break;
+            case FunctionSet.POWER:
+                res = "^";
+
+            default:
+                res = "";
+                break;
+        }
+        return res;
+    }
+
 };

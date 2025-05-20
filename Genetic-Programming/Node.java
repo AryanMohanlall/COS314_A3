@@ -1,6 +1,6 @@
 abstract class Node {
-    private Node left;
-    private Node right;
+    public Node left;
+    public Node right;
 
     public Node(Node left, Node right){
         this.left = left;
@@ -22,5 +22,7 @@ abstract class Node {
     public void setRight(Node r){
         this.right = r;
     }
+
+
 
 };
