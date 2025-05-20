@@ -12,6 +12,6 @@ class Main{
 
         System.out.println(tree.interpret(tree.getRoot(), ""));
 
-        tree.buildSyntaxTree("1.9 + 1.2");
+        tree.buildSyntaxTree();
     }
 }

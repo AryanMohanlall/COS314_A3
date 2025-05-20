@@ -1,6 +1,10 @@
+import java.util.Random;
+
 public class SyntaxTree {
     private Node root;
     public String funcString;
+
+    public final FunctionSet[] functionSet = {FunctionSet.PLUS, FunctionSet.MINUS, FunctionSet.DIVIDE, FunctionSet.MULTIPLY, FunctionSet.POWER};
 
     public SyntaxTree(){
         this.root = null;
@@ -42,16 +46,19 @@ public class SyntaxTree {
         return reString;
     }
 
-    public void buildSyntaxTree(String program){
-        String stringArray[] = program.split("\s");
-
-        for(String s: stringArray){
-            if(isFunction(s)){
-
-            }   
-            if(isTerminal(s)){
+    public void buildSyntaxTree(long seed){
+        Random random = new Random(seed);
+        int length = random.nextInt(10);
+        
+        for(int i=0; i<length; i++){
+            float nodeType = random.nextFloat(0f, 1f);
+            if(nodeType >= 0.5f){
                 
-            }         
+            }//add function node
+
+            if(nodeType < 0.5f){
+
+            }//add terminal node
         }
     }
 
