@@ -23,6 +23,6 @@ abstract class Node {
         this.right = r;
     }
 
-
+    abstract public String toString();
 
 };

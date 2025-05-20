@@ -19,5 +19,9 @@ public class VariableNode extends Node {
     public void setVariable(char v){
         this.variable = v;
     }
+
+    public String toString(){
+        return String.valueOf(variable);
+    }
         
 }
