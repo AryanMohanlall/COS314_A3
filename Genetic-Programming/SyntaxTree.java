@@ -41,4 +41,25 @@ public class SyntaxTree {
 
         return reString;
     }
+
+    public void buildSyntaxTree(String program){
+        String stringArray[] = program.split("\s");
+
+        for(String s: stringArray){
+            if(isFunction(s)){
+
+            }   
+            if(isTerminal(s)){
+                
+            }         
+        }
+    }
+
+    public boolean isFunction(String fString){
+        return fString.matches("[+\\-*/^]");
+    }
+
+    public boolean isTerminal(String vString){
+        return vString.matches("[-+]?[0-9]*\\.?[0-9]+");
+    }
 }
