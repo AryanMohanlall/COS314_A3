@@ -210,7 +210,6 @@ public class SyntaxTree {
     public void Mutation(long seed){
         Random random = new Random(seed);
         float mutationType = random.nextFloat(0, 1);
-        mutationType = 0.51f; //for now
         int idx = random.nextInt(1,numNodes(root));
 
         if(mutationType < 0.5f){
@@ -223,7 +222,7 @@ public class SyntaxTree {
             System.out.println("shrinked");
         }
         if(mutationType >= 0.5f){
-            SyntaxTree subtree = new SyntaxTree();
+            SyntaxTree subtree = new SyntaxTree(seed);
             subtree.buildSyntaxTree(seed);
 
             this.root = this.Mutation(idx, new int[]{0}, subtree.root, root);

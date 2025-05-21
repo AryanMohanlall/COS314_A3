@@ -27,7 +27,7 @@ class Main{
         System.out.println(tree.interpret(tree.getRoot(), ""));
 
         //System.out.println(tree.compute(1,2,3,4,5));
-
+        System.out.println("After mutation");
         tree.Mutation(seed);
 
         System.out.println(tree.interpret(tree.getRoot(), ""));
