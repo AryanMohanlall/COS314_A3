@@ -32,12 +32,22 @@ class Main{
 
         System.out.println("depth="+tree.depth(tree.root));
 
-        SyntaxTree singleTree = new SyntaxTree(c);
+        SyntaxTree singleTree = new SyntaxTree(minus);
         singleTree.append(c, singleTree.root);
+        singleTree.append(one, singleTree.root);
+        singleTree.append(minus, singleTree.root);
+        singleTree.append(b, singleTree.root);
+        singleTree.append(minus, singleTree.root);
+        singleTree.append(three, singleTree.root);
+
         System.out.println(singleTree.interpret(singleTree.root, ""));
         System.out.println("compute="+singleTree.compute(1, 2, 3, 4, 5));
 
         //edge c - -1.7221136 - b - -7.300377E-4
+
+
+        ////////////////////////////////////////////////////////////////
+        GP genetic_program = new GP(seed, "BTC_train.csv");
 
     }
 }
