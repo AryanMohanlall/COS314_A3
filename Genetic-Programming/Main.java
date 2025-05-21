@@ -26,9 +26,15 @@ class Main{
 
         System.out.println(tree.interpret(tree.getRoot(), ""));
 
-        System.out.println(tree.compute(1,2,3,4,5));
+        //System.out.println(tree.compute(1,2,3,4,5));
+
+        tree.Mutation(seed);
+
+        System.out.println(tree.interpret(tree.getRoot(), ""));
 
         System.out.println("Valid?"+tree.validTree());
+
+        System.out.println("depth="+tree.depth(tree.root));
 
     }
 }

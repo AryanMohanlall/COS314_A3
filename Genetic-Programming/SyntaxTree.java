@@ -60,6 +60,7 @@ public class SyntaxTree {
         reString += node.toString() + " ";
         reString += interpret(node.getRight(), reString);
 
+        this.funcString = reString;
         return reString;
     }
 
@@ -87,7 +88,7 @@ public class SyntaxTree {
             }//add function node
 
             if(nodeType > 0.3f && nodeType < 0.6f){
-                Node n = new TerminalNode(null, null, random.nextFloat(0, 10));
+                Node n = new TerminalNode(null, null, random.nextFloat(-2, 2));
                 append(n, root);
             }//add terminal node
 
@@ -188,4 +189,59 @@ public class SyntaxTree {
         }
         return (t == (f+1));
     }
+
+    public int depth(Node cur){
+        if(cur == null) return -1;
+
+        int lHeight = depth(cur.left);
+        int rHeight = depth(cur.right);
+
+        return Math.max(lHeight, rHeight) + 1;
+    }
+
+    public int numNodes(Node cur){
+        if(cur == null)  return 0;
+        int l =numNodes(cur.left);
+        int r =numNodes(cur.right);
+
+        return (1 + r + l);
+    }
+
+    public void Mutation(long seed){
+        Random random = new Random(seed);
+        float mutationType = random.nextFloat(0, 1);
+        mutationType = 0.51f; //for now
+        int idx = random.nextInt(1,numNodes(root));
+
+        if(mutationType < 0.5f){
+            float terminalType = random.nextFloat(0, 1);
+            Node randNode;
+            if(terminalType < 0.5) randNode = new TerminalNode(null, null, random.nextFloat(-2, 2));
+            else randNode = new VariableNode(null, null, (char)(random.nextInt(5) + 'a'));
+
+            this.root = this.Mutation(idx, new int[]{0}, randNode, root);
+            System.out.println("shrinked");
+        }
+        if(mutationType >= 0.5f){
+            SyntaxTree subtree = new SyntaxTree();
+            subtree.buildSyntaxTree(seed);
+
+            this.root = this.Mutation(idx, new int[]{0}, subtree.root, root);
+            System.out.println("grow");
+        }
+    }
+
+    public Node Mutation(int idx, int[] count, Node randNode, Node cur) {
+        if (cur == null) return null;
+
+        cur.left = Mutation(idx, count, randNode, cur.left);
+
+        if (idx == count[0]) {
+            return randNode;
+        }
+        count[0]++;
+        cur.right = Mutation(idx, count, randNode, cur.right);
+        return cur;
+    }
+
 }
