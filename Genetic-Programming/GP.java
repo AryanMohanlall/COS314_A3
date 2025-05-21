@@ -50,7 +50,7 @@ public class GP {
 
         for(int i=0; i<generationNum; i++){
             for(int j=0; j<pop.size();j++){
-                double fit = fitness(pop.get(j), vals, valsLabels, 1);
+                double fit = fitness(pop.get(j), vals, valsLabels);
                 pop.get(j).setFitness(fit);
             }
 
@@ -85,7 +85,7 @@ public class GP {
         return best;
     }// algorithm
 
-/*     private double fitness(SyntaxTree tree, ArrayList<double[]> data, ArrayList<Integer> labels){
+    private double fitness(SyntaxTree tree, ArrayList<double[]> data, ArrayList<Integer> labels){
         int f =0;
         for(int i=0; i<data.size();i++){
             double[] input = data.get(i);
@@ -95,36 +95,7 @@ public class GP {
             }
         }
         return (double) f/data.size();
-    } */
-
-/*     private double fitness(SyntaxTree tree, ArrayList<double[]> data, ArrayList<Integer> labels, int maxClass){
-    int correct = 0;
-    for(int i=0; i<data.size(); i++){
-        double[] input = data.get(i);
-        float val = tree.compute((int) input[0], (int) input[1], (int) input[2], (int) input[3], (int) input[4]);
-        int predicted = Math.round(val);
-        if(predicted < 0) predicted = 0;
-        if(predicted > maxClass) predicted = maxClass;
-        if(predicted == labels.get(i)){
-            correct++;
-        }
     }
-    return (double) correct / data.size();
-    } */
-
-private double fitness(SyntaxTree tree, ArrayList<double[]> data, ArrayList<Integer> labels, int maxClass) {
-    int correct = 0;
-    for (int i = 0; i < data.size(); i++) {
-        double[] input = data.get(i);
-        float val = tree.compute((int) input[0], (int) input[1], (int) input[2], (int) input[3], (int) input[4]);
-        // Use a threshold of 0.5 for binary classification
-        int predicted = (val >= 0.5f) ? 1 : 0;
-        if (predicted == labels.get(i)) {
-            correct++;
-        }
-    }
-    return (double) correct / data.size();
-}
 
     private SyntaxTree selection(ArrayList<SyntaxTree> pop, int size, Random rand){
         SyntaxTree best = null;
