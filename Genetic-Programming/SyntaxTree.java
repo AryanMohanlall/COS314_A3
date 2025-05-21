@@ -4,24 +4,31 @@ import java.util.Vector;
 public class SyntaxTree {
     public Node root;
     public String funcString;
-    public Node[] equation;
+    public int t;
+    public int f;
 
     public final FunctionSet[] functionSet = {FunctionSet.PLUS, FunctionSet.MINUS, FunctionSet.DIVIDE, FunctionSet.MULTIPLY, FunctionSet.POWER};
 
     public SyntaxTree(){
         this.root = null;
         this.funcString = "";
+        this.f = 0;
+        this.t = 0;
     }
 
     public SyntaxTree(Node node){
         this.root = node;
         this.funcString = "";
+        this.f = 0;
+        this.t = 0;
     }
 
     public SyntaxTree(long seed){
         Random random = new Random(seed);
         int randomFunc = random.nextInt(functionSet.length);
         this.root = new FunctionNode(null, null, functionSet[randomFunc]);
+        this.t = 0;
+        this.f = 0;
     }
 
     public Node getRoot(){
@@ -59,7 +66,6 @@ public class SyntaxTree {
         reString = "";
         reString += interpret(node.getLeft(), reString);
         reString += node.toString() + " ";
-        //stack.addElement(node);
         reString += interpret(node.getRight(), reString);
 
         return reString;
@@ -94,10 +100,10 @@ public class SyntaxTree {
                 append(n, root);
             }//add terminal node
 
-/*             if(nodeType > 0.6f){
-                Node n = new VariableNode(null, null, (char)(random.nextInt(26) + 'a'));
+             if(nodeType > 0.6f){
+                Node n = new VariableNode(null, null, (char)(random.nextInt(5) + 'a'));
                 append(n, root);
-            }//add variable node */
+            }//add variable node
         }
     }
 
@@ -109,19 +115,42 @@ public class SyntaxTree {
         return vString.matches("[-+]?[0-9]*\\.?[0-9]+");
     }
 
-    public float compute(){
+    public boolean isVariable(String aString){
+        return aString.matches("[a-z]");
+    }
+
+    public float compute(int a, int b, int c, int d, int e){
         Vector<String> stack = new Vector<>();
+        int input[] = {a, b, c, d, e};
         funcString = interpret(root, "");
         String equationStr[] = funcString.split(" ");
+        float num1;
+        String op;
+        float num2;
 
         stack.addElement(equationStr[0]);
         for(int i=1; i<equationStr.length; i++){
             stack.addElement(equationStr[i]);
 
             if(stack.size() == 3){
-                float num1 = Float.parseFloat(stack.get(0));
-                String op = stack.get(1);
-                float num2 = Float.parseFloat((stack.get(2)));
+                if(isTerminal(stack.get(0))){
+                    num1 = Float.parseFloat(stack.get(0));
+                }else{
+                    char var = stack.get(0).charAt(0);
+                    int idx = Character.getNumericValue(var) % 5;
+                    num1 = input[idx];
+                }
+
+                op = stack.get(1);
+
+                if(isTerminal(stack.get(2))){
+                    num2 = Float.parseFloat(stack.get(2));
+                }else{
+                    char var = stack.get(2).charAt(0);
+                    int idx = Character.getNumericValue(var) % 5;
+                    num2 = input[idx];
+                }
+                
 
                 String res = Float.toString(calcOfStringOp(num1, op, num2));
                 stack.set(0, res);
@@ -156,5 +185,16 @@ public class SyntaxTree {
             res = (float)Math.pow(num1, num2);
         }
         return res;
+    }
+
+    public boolean validTree(){
+        int t = 0;
+        int f= 0;
+        String eq[] = interpret(root, "").split(" ");
+        for(String s : eq){
+            if(isFunction(s)) f+=1;
+            if(isTerminal(s) || isVariable(s)) t+=1;
+        }
+        return (t == (f+1));
     }
 }
