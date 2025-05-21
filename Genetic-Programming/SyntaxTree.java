@@ -4,6 +4,7 @@ import java.util.Vector;
 public class SyntaxTree {
     public Node root;
     public String funcString;
+    int depth;
 
     public final FunctionSet[] functionSet = {FunctionSet.PLUS, FunctionSet.MINUS, FunctionSet.DIVIDE, FunctionSet.MULTIPLY, FunctionSet.POWER};
 
@@ -17,10 +18,11 @@ public class SyntaxTree {
         this.funcString = "";
     }
 
-    public SyntaxTree(long seed){
+    public SyntaxTree(long seed, int depth){
         Random random = new Random(seed);
         int randomFunc = random.nextInt(functionSet.length);
-        this.root = new FunctionNode(null, null, functionSet[randomFunc]);        
+        this.root = new FunctionNode(null, null, functionSet[randomFunc]);
+        this.depth = depth;     
     }
 
     public Node getRoot(){
@@ -43,7 +45,7 @@ public class SyntaxTree {
                 return;
             }
 
-        }//any node
+        }
 
         append(newNode, cur.getLeft());
         append(newNode, cur.getRight());
@@ -77,26 +79,25 @@ public class SyntaxTree {
 
     public void buildSyntaxTree(long seed){
         Random random = new Random(seed);
-        int length = random.nextInt(5,100);
-        
-        for(int i=0; i<length; i++){
-            float nodeType = random.nextFloat(0f, 1f);
-
-            if(nodeType < 0.3f){
+        int length = 10000;
+        int i=0;
+        do{
+            if(i%3 == 0){
                 Node n = new FunctionNode(null, null, functionSet[random.nextInt(functionSet.length)]);
                 append(n, root);
             }//add function node
 
-            if(nodeType > 0.3f && nodeType < 0.6f){
+            if(i%3 == 1){
                 Node n = new TerminalNode(null, null, random.nextFloat(-2, 2));
                 append(n, root);
             }//add terminal node
 
-             if(nodeType > 0.6f){
+             if(i%3 == 2){
                 Node n = new VariableNode(null, null, (char)(random.nextInt(5) + 'a'));
                 append(n, root);
             }//add variable node
-        }
+            i++;
+        }while(i<length && depth(root) < depth);
     }
 
     public boolean isFunction(String fString){
@@ -219,14 +220,12 @@ public class SyntaxTree {
             else randNode = new VariableNode(null, null, (char)(random.nextInt(5) + 'a'));
 
             this.root = this.Mutation(idx, new int[]{0}, randNode, root);
-            System.out.println("shrinked");
         }
         if(mutationType >= 0.5f){
-            SyntaxTree subtree = new SyntaxTree(seed);
+            SyntaxTree subtree = new SyntaxTree(seed, this.depth/2);
             subtree.buildSyntaxTree(seed);
 
             this.root = this.Mutation(idx, new int[]{0}, subtree.root, root);
-            System.out.println("grow");
         }
     }
 

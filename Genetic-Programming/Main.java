@@ -14,7 +14,7 @@ class Main{
         Node c = new VariableNode(null, null, 'c');
 
         long seed = System.nanoTime();
-        SyntaxTree tree = new SyntaxTree(seed);
+        SyntaxTree tree = new SyntaxTree(seed, 10);
 
         //tree.append(one, tree.root);
         //tree.append(minus, tree.root);
@@ -26,11 +26,12 @@ class Main{
 
         System.out.println(tree.interpret(tree.getRoot(), ""));
 
-        //System.out.println(tree.compute(1,2,3,4,5));
-        System.out.println("After mutation");
-        tree.Mutation(seed);
+        //System.out.println("compute="+tree.compute(1,2,3,4,5));
+        //System.out.println("After mutation");
+        //tree.Mutation(seed);
 
-        System.out.println(tree.interpret(tree.getRoot(), ""));
+        //System.out.println(tree.interpret(tree.getRoot(), ""));
+        //System.out.println("compute="+tree.compute(1,2,3,4,5));
 
         System.out.println("Valid?"+tree.validTree());
 
