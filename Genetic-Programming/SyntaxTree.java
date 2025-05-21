@@ -5,6 +5,7 @@ public class SyntaxTree {
     public Node root;
     public String funcString;
     int depth;
+    public double fitness=0.0;
 
     public final FunctionSet[] functionSet = {FunctionSet.PLUS, FunctionSet.MINUS, FunctionSet.DIVIDE, FunctionSet.MULTIPLY, FunctionSet.POWER};
 
@@ -165,7 +166,7 @@ public class SyntaxTree {
             }
         }
 
-        float res = Float.parseFloat(stack.get(0));
+         float res = Float.parseFloat(stack.get(0));
         if((Float.isNaN(res)) || (Float.isInfinite(res))) res = 0;
         return res;
     }
@@ -259,4 +260,71 @@ public class SyntaxTree {
         return cur;
     }
 
+    @Override
+    public SyntaxTree clone() {
+        return new SyntaxTree(cloneTree(this.root));
+    }
+
+    private Node cloneTree(Node node) {
+        if (node == null) return null;
+        Node leftClone = cloneTree(node.getLeft());
+        Node rightClone = cloneTree(node.getRight());
+
+        if (node instanceof FunctionNode) {
+            return new FunctionNode(leftClone, rightClone, ((FunctionNode) node).getFunction());
+        } else if (node instanceof TerminalNode) {
+            return new TerminalNode(leftClone, rightClone, ((TerminalNode) node).getValue());
+        } else if (node instanceof VariableNode) {
+            return new VariableNode(leftClone, rightClone, ((VariableNode) node).getVariable());
+        }
+        return null;
+    }
+
+    public void setFitness(double fit){
+        fitness = fit;
+    }
+
+    public double getFitness(){
+        return fitness;
+    }
+
+    public SyntaxTree crossover(SyntaxTree tree1, Random rand){
+        Node copyThis = cloneTree(this.root);
+        Node copyTree1= cloneTree(tree1.root);
+        int sizeOfThis = numNodes(copyThis);
+        int sizeOfTree1 = numNodes(copyTree1);
+
+        if(sizeOfThis < 2 || sizeOfTree1 < 2){
+            return new SyntaxTree(copyThis);
+        }
+
+        int indxThis = rand.nextInt(1, sizeOfThis);
+        int indxTree1 = rand.nextInt(1, sizeOfThis);
+        Node subtreeThis = getSubtree(indxThis, new int[]{0}, copyThis);
+        Node subtreeTree1 = getSubtree(indxTree1, new int[]{0}, copyTree1);
+    
+        Node rt = replaceSubtree(indxThis, new int[]{0}, subtreeTree1, copyThis);
+        return new SyntaxTree(rt);
+    }
+
+    private Node getSubtree(int target, int[] count, Node cur) {
+        if (cur == null) return null;
+        if (count[0] == target) return cur;
+        count[0]++;
+        Node left = getSubtree(target, count, cur.left);
+        return (left != null) ? left : getSubtree(target, count, cur.right);
+    }
+
+    private Node replaceSubtree(int target, int[] count, Node replacement, Node cur) {
+        if (cur == null){
+            return null;
+        }
+        if (count[0] == target){
+            return cloneTree(replacement);
+        }
+        count[0]++;
+        cur.left = replaceSubtree(target, count, replacement, cur.left);
+        cur.right = replaceSubtree(target, count, replacement, cur.right);
+        return cur;
+    }
 }

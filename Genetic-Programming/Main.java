@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 class Main{
     public static void main(String[] args) {
         Node plus = new FunctionNode(null, null, FunctionSet.PLUS);
@@ -47,7 +48,34 @@ class Main{
 
 
         ////////////////////////////////////////////////////////////////
+        System.out.println("GP Test\n");
         GP genetic_program = new GP(seed, "BTC_train.csv");
-
+        
+        ArrayList<SyntaxTree> population = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            SyntaxTree t = new SyntaxTree(seed + i, 5);
+            t.buildSyntaxTree(seed + i);
+            population.add(t);
+        }
+        
+        ArrayList<double[]> data = new ArrayList<>();
+        ArrayList<Integer> labels = new ArrayList<>();
+        for (int i = 0; i < genetic_program.data.length; i++) {
+            double[] inputs = new double[5];
+            for (int j = 0; j < 5; j++) {
+                inputs[j] = genetic_program.data[i][j];
+            }
+            data.add(inputs);
+            labels.add((int)genetic_program.data[i][5]);
+        }
+        
+        SyntaxTree bestTree = genetic_program.GeneticProgramming(
+            population, 
+            20,0.7,0.1,data, labels);
+        
+        System.out.println("\nbest tree:");
+        System.out.println(bestTree.interpret(bestTree.getRoot(), ""));
+        System.out.println("Fitness: " + bestTree.getFitness());
+        System.out.println("Test compute: " + bestTree.compute(1, 2, 3, 4, 5));
     }
 }

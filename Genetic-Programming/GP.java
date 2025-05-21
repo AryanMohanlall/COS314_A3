@@ -2,6 +2,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Random;
 
 public class GP {
     public Vector<SyntaxTree> popualtion;
@@ -18,8 +21,11 @@ public class GP {
         int row = 0;
         int col = 0;
         try(Scanner scanner = new Scanner(new File(file))){
+            if(scanner.hasNextLine()){
+                scanner.nextLine();
+            }
             while(scanner.hasNextLine()){
-                if(row==0){scanner.nextLine();}
+                //if(row==0){scanner.nextLine();}
 
                 String line = scanner.nextLine();
                 String values[] = line.split(",");
@@ -34,13 +40,100 @@ public class GP {
         }
     }
 
-    public void crossover(SyntaxTree tree1, SyntaxTree tree2){
+/*     public void crossover(SyntaxTree tree1, SyntaxTree tree2){
         Node temptree = null;
-    }
+    } */
 
-    public void GeneticProgramming(){
+    public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNum, double crossoverRate, double mutationRate, ArrayList<double[]> vals, ArrayList<Integer> valsLabels){
+        Random rand = new Random();
+        SyntaxTree best=null;
 
+        for(int i=0; i<generationNum; i++){
+            for(int j=0; j<pop.size();j++){
+                double fit = fitness(pop.get(j), vals, valsLabels, 1);
+                pop.get(j).setFitness(fit);
+            }
 
+            pop.sort(Comparator.comparingDouble(SyntaxTree::getFitness).reversed());
+            if(best==null || pop.get(0).fitness > best.fitness){
+                best = pop.get(0).clone();
+                System.out.println("generation"+i+" best fitness:"+best.fitness);
+            }
+
+            ArrayList<SyntaxTree> newPop = new ArrayList<>();
+            newPop.add(best.clone());
+
+            while(newPop.size() < pop.size()){
+                SyntaxTree p1 = selection(pop, 5, rand);
+                SyntaxTree p2 = selection(pop, 5 , rand);
+
+                SyntaxTree child;
+                if(rand.nextDouble() < crossoverRate){
+                    child = p1.crossover(p2, rand);
+                }
+                else{
+                    child = p1.clone();
+                }
+
+                if(rand.nextDouble()<mutationRate){
+                    child.Mutation(rand.nextLong());
+                }
+                newPop.add(child);
+            }
+            pop = newPop;
+        }
+        return best;
     }// algorithm
 
+/*     private double fitness(SyntaxTree tree, ArrayList<double[]> data, ArrayList<Integer> labels){
+        int f =0;
+        for(int i=0; i<data.size();i++){
+            double[] input = data.get(i);
+            float val = tree.compute((int) input[0], (int) input[1], (int) input[2], (int) input[3], (int) input[4]);
+            if(Math.round(val) == labels.get(i)){
+                f++;
+            }
+        }
+        return (double) f/data.size();
+    } */
+
+/*     private double fitness(SyntaxTree tree, ArrayList<double[]> data, ArrayList<Integer> labels, int maxClass){
+    int correct = 0;
+    for(int i=0; i<data.size(); i++){
+        double[] input = data.get(i);
+        float val = tree.compute((int) input[0], (int) input[1], (int) input[2], (int) input[3], (int) input[4]);
+        int predicted = Math.round(val);
+        if(predicted < 0) predicted = 0;
+        if(predicted > maxClass) predicted = maxClass;
+        if(predicted == labels.get(i)){
+            correct++;
+        }
+    }
+    return (double) correct / data.size();
+    } */
+
+private double fitness(SyntaxTree tree, ArrayList<double[]> data, ArrayList<Integer> labels, int maxClass) {
+    int correct = 0;
+    for (int i = 0; i < data.size(); i++) {
+        double[] input = data.get(i);
+        float val = tree.compute((int) input[0], (int) input[1], (int) input[2], (int) input[3], (int) input[4]);
+        // Use a threshold of 0.5 for binary classification
+        int predicted = (val >= 0.5f) ? 1 : 0;
+        if (predicted == labels.get(i)) {
+            correct++;
+        }
+    }
+    return (double) correct / data.size();
+}
+
+    private SyntaxTree selection(ArrayList<SyntaxTree> pop, int size, Random rand){
+        SyntaxTree best = null;
+        for(int i=0; i<size; i++){
+            SyntaxTree j = pop.get(rand.nextInt(pop.size()));
+            if(best==null || j.fitness>best.fitness){
+                best=j;
+            }
+        }
+        return best.clone();
+    }
 }
