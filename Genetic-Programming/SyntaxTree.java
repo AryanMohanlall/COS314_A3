@@ -122,6 +122,17 @@ public class SyntaxTree {
         float num2;
 
         stack.addElement(equationStr[0]);
+
+        if(equationStr.length == 1){
+            if(isTerminal(stack.get(0))) return Float.parseFloat(stack.get(0));
+            if(isVariable(stack.get(0))){
+                char var = stack.get(0).charAt(0);
+                int idx = Character.getNumericValue(var) % 5;
+                return input[idx];
+            }
+            if(isFunction(stack.get(0))) return 0;
+        }// length=1
+
         for(int i=1; i<equationStr.length; i++){
             stack.addElement(equationStr[i]);
 
@@ -131,7 +142,7 @@ public class SyntaxTree {
                 }else{
                     char var = stack.get(0).charAt(0);
                     int idx = Character.getNumericValue(var) % 5;
-                    num1 = input[idx];
+                    num1 = input[Math.abs(idx)];
                 }
 
                 op = stack.get(1);
@@ -141,7 +152,7 @@ public class SyntaxTree {
                 }else{
                     char var = stack.get(2).charAt(0);
                     int idx = Character.getNumericValue(var) % 5;
-                    num2 = input[idx];
+                    num2 = input[Math.abs(idx)];
                 }
                 
 
