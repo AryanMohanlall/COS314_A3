@@ -113,6 +113,8 @@ public class SyntaxTree {
     }
 
     public float compute(int a, int b, int c, int d, int e){
+        if(!validTree()) return 0;
+
         Vector<String> stack = new Vector<>();
         int input[] = {a, b, c, d, e};
         funcString = interpret(root, "");
@@ -163,7 +165,9 @@ public class SyntaxTree {
             }
         }
 
-        return Float.parseFloat(stack.get(0));
+        float res = Float.parseFloat(stack.get(0));
+        if((Float.isNaN(res)) || (Float.isInfinite(res))) res = 0;
+        return res;
     }
 
     public float calcOfStringOp(float num1, String op, float num2){
@@ -222,7 +226,7 @@ public class SyntaxTree {
     public void Mutation(long seed){
         Random random = new Random(seed);
         float mutationType = random.nextFloat(0, 1);
-        int idx = random.nextInt(1,numNodes(root));
+        int idx = random.nextInt(2,numNodes(root));
 
         if(mutationType < 0.5f){
             float terminalType = random.nextFloat(0, 1);
@@ -243,13 +247,15 @@ public class SyntaxTree {
     public Node Mutation(int idx, int[] count, Node randNode, Node cur) {
         if (cur == null) return null;
 
-        cur.left = Mutation(idx, count, randNode, cur.left);
-
         if (idx == count[0]) {
             return randNode;
         }
+
         count[0]++;
+
+        cur.left = Mutation(idx, count, randNode, cur.left);
         cur.right = Mutation(idx, count, randNode, cur.right);
+
         return cur;
     }
 

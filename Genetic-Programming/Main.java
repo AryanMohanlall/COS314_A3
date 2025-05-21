@@ -14,13 +14,8 @@ class Main{
         Node c = new VariableNode(null, null, 'c');
 
         long seed = System.nanoTime();
-        SyntaxTree tree = new SyntaxTree(seed, 10);
 
-        //tree.append(one, tree.root);
-        //tree.append(minus, tree.root);
-        //tree.append(two, tree.root);
-        //tree.append(plus, tree.root);
-        //tree.append(a, tree.root);
+        SyntaxTree tree = new SyntaxTree(seed, 10);
 
         tree.buildSyntaxTree(seed);
 
@@ -38,6 +33,7 @@ class Main{
         System.out.println("depth="+tree.depth(tree.root));
 
         SyntaxTree singleTree = new SyntaxTree(c);
+        singleTree.append(c, singleTree.root);
         System.out.println(singleTree.interpret(singleTree.root, ""));
         System.out.println("compute="+singleTree.compute(1, 2, 3, 4, 5));
 
