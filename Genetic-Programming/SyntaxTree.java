@@ -5,20 +5,20 @@ public class SyntaxTree {
     public Node root;
     public String funcString;
     int depth;
-    public double fitness;
+    private double fitness;
 
     public final FunctionSet[] functionSet = {FunctionSet.PLUS, FunctionSet.MINUS, FunctionSet.DIVIDE, FunctionSet.MULTIPLY, FunctionSet.POWER};
 
     public SyntaxTree(){
         this.root = null;
         this.funcString = "";
-        this.fitness = 0.0;
+        //this.fitness = 99;
     }
 
     public SyntaxTree(Node node){
         this.root = node;
         this.funcString = "";
-        this.fitness = 0.0;
+        //this.fitness = 99;
     }
 
     public SyntaxTree(long seed, int depth){
@@ -26,7 +26,7 @@ public class SyntaxTree {
         int randomFunc = random.nextInt(functionSet.length);
         this.root = new FunctionNode(null, null, functionSet[randomFunc]);
         this.depth = depth;   
-        this.fitness = 0.0;  
+        //this.fitness = 99;  
     }
 
     public Node getRoot(){
@@ -55,6 +55,26 @@ public class SyntaxTree {
         append(newNode, cur.getRight());
 
     }// problem here sometimes
+
+
+/* public void append(Node newNode, Node cur) {
+    if (cur == null) return;
+
+    // Corrected FunctionNode check using instanceof
+    if ((cur instanceof FunctionNode) && (cur.getLeft() == null || cur.getRight() == null)) {
+        if (cur.getLeft() == null) {
+            cur.setLeft(newNode);
+            return;
+        }
+        if (cur.getRight() == null) {
+            cur.setRight(newNode);
+            return;
+        }
+    }
+
+    append(newNode, cur.getLeft());
+    append(newNode, cur.getRight());
+} */
 
 
 
@@ -104,6 +124,28 @@ public class SyntaxTree {
         }while(i<length && depth(root) < depth);
     }
 
+/*     public void buildSyntaxTree(long seed) {
+    Random random = new Random(seed);
+    this.root = buildSubtree(random, depth);
+}
+
+private Node buildSubtree(Random rand, int remainingDepth) {
+    if (remainingDepth == 0) {
+        // Leaf node: 50% chance for terminal/variable
+        if (rand.nextBoolean()) {
+            return new TerminalNode(null, null, rand.nextFloat(-2, 2));
+        } else {
+            return new VariableNode(null, null, (char) (rand.nextInt(5) + 'a'));
+        }
+    } else {
+        // Internal node: function with two children
+        FunctionSet func = functionSet[rand.nextInt(functionSet.length)];
+        Node left = buildSubtree(rand, remainingDepth - 1);
+        Node right = buildSubtree(rand, remainingDepth - 1);
+        return new FunctionNode(left, right, func);
+    }
+} */
+
     public boolean isFunction(String fString){
         return fString.matches("[+\\-*/^]");
     }
@@ -117,12 +159,18 @@ public class SyntaxTree {
     }
 
     public float compute(double a, double b, double c, double d, double e){
-        if(!validTree()) return 0;
+/*         if(!validTree()) return 0;
 
         Vector<String> stack = new Vector<>();
         double input[] = {a, b, c, d, e};
         funcString = interpret(root, "");
-        String equationStr[] = funcString.split(" ");
+        String equationStr[] = funcString.split(" "); */
+            if (!validTree()) return 0;
+
+    Vector<String> stack = new Vector<>();
+    double[] input = {a, b, c, d, e};
+    funcString = interpret(root, "");
+    String[] equationStr = funcString.split(" ");
         float num1;
         String op;
         float num2;
@@ -131,10 +179,11 @@ public class SyntaxTree {
 
         if(equationStr.length == 1){
             if(isTerminal(stack.get(0))) return Float.parseFloat(stack.get(0));
-            if(isVariable(stack.get(0))){
+            if (isVariable(stack.get(0))) {
                 char var = stack.get(0).charAt(0);
-                int idx = Character.getNumericValue(var) % 5;
-                return (float)input[idx];
+                int idx = (var - 'a') % 5;
+                idx = Math.abs(idx);
+                return (float) input[idx];
             }
             if(isFunction(stack.get(0))) return 0;
         }// length=1
@@ -158,6 +207,7 @@ public class SyntaxTree {
                 }else{
                     char var = stack.get(2).charAt(0);
                     int idx = Character.getNumericValue(var) % 5;
+                    //int idx = var - 'a';
                     num2 = (float)input[Math.abs(idx)];
                 }
                 
@@ -186,15 +236,16 @@ public class SyntaxTree {
         }
 
         if(op.charAt(0) == '*'){
-            res = num1 * num2;
+            res =num1*num2;
         }
 
         if(op.charAt(0) == '/'){
-            res = num1 / num2;
+            if (Math.abs(num2) < 1e-6) res = num1; //i added
+                else res = num1 / num2;
         }
 
         if(op.charAt(0) == '^'){
-            res = (float)Math.pow(num1, num2);
+            res = (float) Math.pow(num1, num2);
         }
         return res;
     }
@@ -209,6 +260,16 @@ public class SyntaxTree {
         }
         return (t == (f+1));
     }
+
+/*     public boolean validTree() {
+    int t = 0, f = 0;
+    String[] eq = interpret(root, "").split(" ");
+    for (String s : eq) {
+        if (isFunction(s)) f++;
+        if (isTerminal(s) || isVariable(s)) t++;
+    }
+    return (t == f + 1) && (root != null);
+} */
 
     public int depth(Node cur){
         if(cur == null) return -1;
@@ -241,6 +302,7 @@ public class SyntaxTree {
             this.root = this.Mutation(idx, new int[]{0}, randNode, root);
         }
         if(mutationType >= 0.5f){
+            //SyntaxTree subtree = new SyntaxTree(seed, this.depth/2);
             SyntaxTree subtree = new SyntaxTree(seed, this.depth/2);
             subtree.buildSyntaxTree(seed);
 
@@ -291,7 +353,7 @@ public class SyntaxTree {
         return fitness;
     }
 
-    public SyntaxTree crossover(SyntaxTree tree1, Random rand){
+/*     public SyntaxTree crossover(SyntaxTree tree1, Random rand){
         Node copyThis = cloneTree(this.root);
         Node copyTree1= cloneTree(tree1.root);
         int sizeOfThis = numNodes(copyThis);
@@ -308,7 +370,29 @@ public class SyntaxTree {
     
         Node rt = replaceSubtree(indxThis, new int[]{0}, subtreeTree1, copyThis);
         return new SyntaxTree(rt);
+    } */
+
+    public SyntaxTree crossover(SyntaxTree tree1, Random rand) {
+    Node copyThis = cloneTree(this.root);
+    Node copyTree1 = cloneTree(tree1.root);
+    int sizeOfThis = numNodes(copyThis);
+    int sizeOfTree1 = numNodes(copyTree1);
+
+    if (sizeOfThis < 2 || sizeOfTree1 < 2) {
+        return new SyntaxTree(copyThis);
     }
+
+    // Generate 0-based indices
+    int indxThis = rand.nextInt(sizeOfThis); 
+    int indxTree1 = rand.nextInt(sizeOfTree1);
+
+    Node subtreeThis = getSubtree(indxThis, new int[]{0}, copyThis);
+    Node subtreeTree1 = getSubtree(indxTree1, new int[]{0}, copyTree1);
+
+    Node rt = replaceSubtree(indxThis, new int[]{0}, subtreeTree1, copyThis);
+
+    return new SyntaxTree(rt);
+}
 
     private Node getSubtree(int target, int[] count, Node cur) {
         if (cur == null) return null;
