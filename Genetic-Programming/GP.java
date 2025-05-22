@@ -52,7 +52,9 @@ public class GP {
             for(int j=0; j<pop.size();j++){
                 //double fit = fitness(pop.get(j), vals, valsLabels);
                 //pop.get(j).setFitness(fit);
-                fitnessFunction(pop.get(i), vals, valsLabels);
+                fitnessFunction(pop.get(i), vals);
+                System.out.println("new fitness="+pop.get(i).getFitness());
+
             }
 
             pop.sort(Comparator.comparingDouble(SyntaxTree::getFitness).reversed());
@@ -77,7 +79,7 @@ public class GP {
                 }
 
                 if(rand.nextDouble()<mutationRate){
-                    child.Mutation(rand.nextLong());
+                    child.Mutation(/* rand.nextLong() */ seed+1);
                 }
                 newPop.add(child);
             }
@@ -102,21 +104,23 @@ public class GP {
         SyntaxTree best = null;
         for(int i=0; i<size; i++){
             SyntaxTree j = pop.get(rand.nextInt(pop.size()));
-            if(best==null || j.fitness>best.fitness){
+            if(best==null || j.fitness<best.fitness){
                 best=j;
             }
         }
         return best.clone();
     }
 
-    public void fitnessFunction(SyntaxTree tree, ArrayList<double[]> data, ArrayList<Integer> labels){
+    public void fitnessFunction(SyntaxTree tree, ArrayList<double[]> data){
         for(int i=0; i<data.size();i++){
             double[] input = data.get(i);
             float val = tree.compute((int) input[0], (int) input[1], (int) input[2], (int) input[3], (int) input[4]);
             float fit = (float) (Math.abs(input[4] - val) / Math.max(val, input[4]));
-            if(Float.isInfinite(fit) || Float.isNaN(fit)) fit = 0;    
+            if(Float.isInfinite(fit) || Float.isNaN(fit)) fit = val;    
             //System.out.println("fitness="+ fit);
-            tree.setFitness(fit);
+            if(fit < tree.getFitness())tree.setFitness(fit);
+            //System.out.println("new fitness="+tree.getFitness());
+            break;
         }
     }   
 }

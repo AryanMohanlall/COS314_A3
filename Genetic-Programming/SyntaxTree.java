@@ -5,25 +5,28 @@ public class SyntaxTree {
     public Node root;
     public String funcString;
     int depth;
-    public double fitness=0.0;
+    public double fitness;
 
     public final FunctionSet[] functionSet = {FunctionSet.PLUS, FunctionSet.MINUS, FunctionSet.DIVIDE, FunctionSet.MULTIPLY, FunctionSet.POWER};
 
     public SyntaxTree(){
         this.root = null;
         this.funcString = "";
+        this.fitness = 0.0;
     }
 
     public SyntaxTree(Node node){
         this.root = node;
         this.funcString = "";
+        this.fitness = 0.0;
     }
 
     public SyntaxTree(long seed, int depth){
         Random random = new Random(seed);
         int randomFunc = random.nextInt(functionSet.length);
         this.root = new FunctionNode(null, null, functionSet[randomFunc]);
-        this.depth = depth;     
+        this.depth = depth;   
+        this.fitness = 0.0;  
     }
 
     public Node getRoot(){
@@ -227,7 +230,7 @@ public class SyntaxTree {
     public void Mutation(long seed){
         Random random = new Random(seed);
         float mutationType = random.nextFloat(0, 1);
-        int idx = random.nextInt(2,numNodes(root));
+        int idx = random.nextInt(numNodes(root));
 
         if(mutationType < 0.5f){
             float terminalType = random.nextFloat(0, 1);
