@@ -50,8 +50,9 @@ public class GP {
 
         for(int i=0; i<generationNum; i++){
             for(int j=0; j<pop.size();j++){
-                double fit = fitness(pop.get(j), vals, valsLabels);
-                pop.get(j).setFitness(fit);
+                //double fit = fitness(pop.get(j), vals, valsLabels);
+                //pop.get(j).setFitness(fit);
+                fitnessFunction(pop.get(i), vals, valsLabels);
             }
 
             pop.sort(Comparator.comparingDouble(SyntaxTree::getFitness).reversed());
@@ -107,4 +108,15 @@ public class GP {
         }
         return best.clone();
     }
+
+    public void fitnessFunction(SyntaxTree tree, ArrayList<double[]> data, ArrayList<Integer> labels){
+        for(int i=0; i<data.size();i++){
+            double[] input = data.get(i);
+            float val = tree.compute((int) input[0], (int) input[1], (int) input[2], (int) input[3], (int) input[4]);
+            float fit = (float) (Math.abs(input[4] - val) / Math.max(val, input[4]));
+            if(Float.isInfinite(fit) || Float.isNaN(fit)) fit = 0;    
+            //System.out.println("fitness="+ fit);
+            tree.setFitness(fit);
+        }
+    }   
 }

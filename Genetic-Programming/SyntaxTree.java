@@ -113,11 +113,11 @@ public class SyntaxTree {
         return aString.matches("[a-z]");
     }
 
-    public float compute(int a, int b, int c, int d, int e){
+    public float compute(double a, double b, double c, double d, double e){
         if(!validTree()) return 0;
 
         Vector<String> stack = new Vector<>();
-        int input[] = {a, b, c, d, e};
+        double input[] = {a, b, c, d, e};
         funcString = interpret(root, "");
         String equationStr[] = funcString.split(" ");
         float num1;
@@ -131,7 +131,7 @@ public class SyntaxTree {
             if(isVariable(stack.get(0))){
                 char var = stack.get(0).charAt(0);
                 int idx = Character.getNumericValue(var) % 5;
-                return input[idx];
+                return (float)input[idx];
             }
             if(isFunction(stack.get(0))) return 0;
         }// length=1
@@ -145,7 +145,7 @@ public class SyntaxTree {
                 }else{
                     char var = stack.get(0).charAt(0);
                     int idx = Character.getNumericValue(var) % 5;
-                    num1 = input[Math.abs(idx)];
+                    num1 = (float)input[Math.abs(idx)];
                 }
 
                 op = stack.get(1);
@@ -155,7 +155,7 @@ public class SyntaxTree {
                 }else{
                     char var = stack.get(2).charAt(0);
                     int idx = Character.getNumericValue(var) % 5;
-                    num2 = input[Math.abs(idx)];
+                    num2 = (float)input[Math.abs(idx)];
                 }
                 
 
