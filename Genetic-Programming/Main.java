@@ -84,4 +84,6 @@ class Main{
     System.out.println("\nBest Tree:");
     System.out.println(bestTree.interpret(bestTree.getRoot(), ""));
     System.out.println("Fitness (F1): " + bestTree.getFitness());
+    /* population.get(0).setFitness(500);
+    System.out.println(population.get(0).getFitness()); */
     }}

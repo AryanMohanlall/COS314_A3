@@ -165,7 +165,7 @@ private Node buildSubtree(Random rand, int remainingDepth) {
         double input[] = {a, b, c, d, e};
         funcString = interpret(root, "");
         String equationStr[] = funcString.split(" "); */
-            if (!validTree()) return 0;
+            //if (!validTree()) return 0;
 
     Vector<String> stack = new Vector<>();
     double[] input = {a, b, c, d, e};
@@ -291,7 +291,7 @@ private Node buildSubtree(Random rand, int remainingDepth) {
     public void Mutation(long seed){
         Random random = new Random(seed);
         float mutationType = random.nextFloat(0, 1);
-        int idx = random.nextInt(numNodes(root));
+        int idx = Math.abs(random.nextInt(numNodes(root)));
 
         if(mutationType < 0.5f){
             float terminalType = random.nextFloat(0, 1);

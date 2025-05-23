@@ -13,8 +13,9 @@ public class GP {
     public float data[][];
 
     public GP(long seed, String file){
-        this.best = new SyntaxTree();
-        best.setFitness(99);
+        // this.best = new SyntaxTree();
+        // this.best.setFitness(99);
+        this.best=null;
         this.popualtion = new Vector<>();
         this.seed = seed;
         this.data = new float[998][6];
@@ -148,25 +149,25 @@ public class GP {
     float precision = (TP == 0) ? 0 : (float) TP / (TP + FP);
     float recall = (TP == 0) ? 0 : (float) TP / (TP + FN);
     float f1 = (precision + recall == 0) ? 0 : 2 * (precision * recall) / (precision + recall);
-    //if(f1==0.0) f1=99;
+    if(f1==0.0) f1=0.8f;
     // Use F1 score as the fitness
     if(f1!=0.0) tree.setFitness(f1);
 }
 
 private SyntaxTree selection(ArrayList<SyntaxTree> pop, int size, Random rand) {
-    SyntaxTree best = null;
+    //SyntaxTree best = null;
     for (int i = 0; i < size; i++) {
         SyntaxTree candidate = pop.get(i);
-        if (best == null || candidate.getFitness() > best.getFitness()) {
-            if(candidate.getFitness()!=0.0) best = candidate;
+        if (this.best == null || candidate.getFitness() < this.best.getFitness()) {
+            if(candidate.getFitness()!=0.0) this.best = candidate;
         }
     }
-    return best.clone();
+    return this.best.clone();
 }
 
 public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNum, double crossoverRate, double mutationRate, ArrayList<double[]> vals, ArrayList<Integer> valsLabels) {
     Random rand = new Random(seed);
-    SyntaxTree best = null;
+    //SyntaxTree best = null;
 
     for (int i = 0; i < generationNum; i++) {
         for (int j = 0; j < pop.size(); j++) {
@@ -175,13 +176,13 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
         }
 
         pop.sort((t1, t2) -> Double.compare(t2.getFitness(), t1.getFitness()));
-        if (best == null || pop.get(0).getFitness() > best.getFitness()) {
-            best = pop.get(0).clone();
-            System.out.println("Generation " + i + " Best F1: " + best.getFitness());
+        if (this.best == null || pop.get(0).getFitness() > this.best.getFitness()) {
+            this.best = pop.get(0).clone();
+            System.out.println("Generation " + i + " Best F1: " + this.best.getFitness());
         }
 
         ArrayList<SyntaxTree> newPop = new ArrayList<>();
-        newPop.add(best.clone());
+        newPop.add(this.best.clone());
 
         while (newPop.size() < pop.size()) {
             SyntaxTree p1 = selection(pop, 5, rand);
@@ -198,6 +199,6 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
         }
         pop = newPop;
     }
-    return best;
+    return this.best;
 }
 }
