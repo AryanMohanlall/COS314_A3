@@ -11,6 +11,9 @@ public class GP {
     public SyntaxTree best;
     public long seed;
     public float data[][];
+    public float accuracy;
+    public float f1;
+    public ArrayList<SyntaxTree> popu;
 
     public GP(long seed, String file){
         // this.best = new SyntaxTree();
@@ -42,54 +45,6 @@ public class GP {
         }
     }
 
-/*     public void crossover(SyntaxTree tree1, SyntaxTree tree2){
-        Node temptree = null;
-    } */
-
-/*     public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNum, double crossoverRate, double mutationRate, ArrayList<double[]> vals, ArrayList<Integer> valsLabels){
-        Random rand = new Random(seed);
-        SyntaxTree best=null;
-
-        for(int i=0; i<generationNum; i++){
-            for(int j=0; j<pop.size();j++){
-                //double fit = fitness(pop.get(j), vals, valsLabels);
-                //pop.get(j).setFitness(fit);
-                fitnessFunction(pop.get(i), vals);
-                System.out.println("new fitness="+pop.get(i).getFitness());
-
-            }
-
-            pop.sort(Comparator.comparingDouble(SyntaxTree::getFitness));
-            if(best==null || pop.get(0).fitness > best.fitness){
-                best = pop.get(0).clone();
-                System.out.println("generation"+i+" best fitness:"+best.fitness);
-            }
-
-            ArrayList<SyntaxTree> newPop = new ArrayList<>();
-            newPop.add(best.clone());
-
-            while(newPop.size() < pop.size()){
-                SyntaxTree p1 = selection(pop, 5, rand);
-                SyntaxTree p2 = selection(pop, 5 , rand);
-
-                SyntaxTree child;
-                if(rand.nextDouble() < crossoverRate){
-                    child = p1.crossover(p2, rand);
-                }
-                else{
-                    child = p1.clone();
-                }
-
-                if(rand.nextDouble()<mutationRate){
-                    child.Mutation(/* rand.nextLong() // seed+1);
-                }
-                newPop.add(child);
-            }
-            pop = newPop;
-        }
-        return best;
-    } algorithm */
-
     private double fitness(SyntaxTree tree, ArrayList<double[]> data, ArrayList<Integer> labels){
         int f =0;
         for(int i=0; i<data.size();i++){
@@ -101,17 +56,6 @@ public class GP {
         }
         return (double) f/data.size();
     }
-
-/*     private SyntaxTree selection(ArrayList<SyntaxTree> pop, int size, Random rand){
-        SyntaxTree best = null;
-        for(int i=0; i<size; i++){
-            SyntaxTree j = pop.get(rand.nextInt(pop.size()));
-            if(best==null || j.fitness<best.fitness){
-                best=j;
-            }
-        }
-        return best.clone();
-    } */
 
 /*     public void fitnessFunction(SyntaxTree tree, ArrayList<double[]> data){
         for(int i=0; i<data.size();i++){
@@ -172,13 +116,14 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
     for (int i = 0; i < generationNum; i++) {
         for (int j = 0; j < pop.size(); j++) {
             fitnessFunction(pop.get(j), vals, valsLabels);
-            System.out.println("Fitness (F1): " + pop.get(j).getFitness());
+            //System.out.println("Fitness (F1): " + pop.get(j).getFitness());
         }
 
         pop.sort((t1, t2) -> Double.compare(t2.getFitness(), t1.getFitness()));
         if (this.best == null || pop.get(0).getFitness() > this.best.getFitness()) {
             this.best = pop.get(0).clone();
-            System.out.println("Generation " + i + " Best F1: " + this.best.getFitness());
+            //System.out.println("Generation " + i + " Best F1: " + this.best.getFitness());
+            System.out.println("Generation " + i + " Best tree: " + this.best.interpret(best.root, ""));
         }
 
         ArrayList<SyntaxTree> newPop = new ArrayList<>();
@@ -198,7 +143,79 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
 }
         }
         pop = newPop;
+        this.popu = pop;
     }
     return this.best;
 }
+
+
+
+    public float newfitness(float a, float b){
+        float res = (Math.abs(a-b) / Math.max(a, a));
+        if(Float.isInfinite(res) || Float.isNaN(res)) res = 99;
+        return res;
+    }
+
+    public double F1(){
+        int TP=0, FP=0, FN=0;
+
+        for(int i=0; i<998; i++){
+            float ans = popu.get(i % 50).compute(data[i][0], data[i][1], data[i][2], data[i][3], data[i][3]);
+            //System.out.println("ans="+ans);
+            if((ans > data[i][0]) && (data[i][4] > data[i][0])){
+                TP += 1;
+            }else{
+                FP += 1;
+            }
+
+            if((ans < data[i][0]) && (data[i][4] > data[i][0])){
+                FN += 1;
+            }
+        }
+        double precision = TP / (TP + FP) ;
+        double recall = TP / (TP + FN);
+        precision *= 100;
+        recall *= 100;
+        System.out.println("tp="+TP);
+        System.out.println("fp="+FP);
+        System.out.println("fn="+FN);
+        System.out.println("precision="+precision*100);
+        System.out.println("recall="+recall*100);
+        double res = 2 *((precision*recall) / (precision+recall));
+        if(Double.isNaN(res)) res = 0d;
+
+        return res;
+    }
+
+    public double Accuracy(){
+        int TP=0, FP=0, FN=0, TN=0;
+
+        for(int i=0; i<998; i++){
+            float ans = popu.get(i % 50).compute(data[i][0], data[i][1], data[i][2], data[i][3], data[i][3]);
+            //System.out.println("ans="+ans);
+            if((ans > data[i][0]) && (data[i][4] > data[i][0])){
+                TP += 1;
+            }else{
+                FP += 1;
+            }
+
+            if((ans < data[i][0]) && (data[i][4] > data[i][0])){
+                FN += 1;
+            }
+
+            if((ans < data[i][0]) && (data[i][4] < data[i][0])){
+                TN += 1;
+            }
+        }
+
+        System.out.println("tp="+TP);
+        System.out.println("fp="+FP);
+        System.out.println("fn="+FN);
+        System.out.println("tn="+TN);
+        double res = (TP+TN) / (TP + TN + FN + FP);
+        if(Double.isNaN(res)) res = 0d;
+
+        return res;        
+    }
 }
+

@@ -5,7 +5,7 @@ public class SyntaxTree {
     public Node root;
     public String funcString;
     int depth;
-    private double fitness;
+    public double fitness = 99;
 
     public final FunctionSet[] functionSet = {FunctionSet.PLUS, FunctionSet.MINUS, FunctionSet.DIVIDE, FunctionSet.MULTIPLY, FunctionSet.POWER};
 
@@ -102,7 +102,7 @@ public class SyntaxTree {
     }
 
     public void buildSyntaxTree(long seed){
-        Random random = new Random(seed);
+        Random random = new Random(seed+1);
         int length = 10000;
         int i=0;
         do{
@@ -112,7 +112,7 @@ public class SyntaxTree {
             }//add function node
 
             if(i%3 == 1){
-                Node n = new TerminalNode(null, null, random.nextFloat(-2, 2));
+                Node n = new TerminalNode(null, null, random.nextFloat(-2f, -1f));
                 append(n, root);
             }//add terminal node
 
@@ -185,7 +185,7 @@ private Node buildSubtree(Random rand, int remainingDepth) {
                 idx = Math.abs(idx);
                 return (float) input[idx];
             }
-            if(isFunction(stack.get(0))) return 0;
+            if(isFunction(stack.get(0))) return 99;
         }// length=1
 
         for(int i=1; i<equationStr.length; i++){
@@ -346,11 +346,11 @@ private Node buildSubtree(Random rand, int remainingDepth) {
     }
 
     public void setFitness(double fit){
-        fitness = fit;
+        this.fitness = fit;
     }
 
     public double getFitness(){
-        return fitness;
+        return this.fitness;
     }
 
 /*     public SyntaxTree crossover(SyntaxTree tree1, Random rand){
