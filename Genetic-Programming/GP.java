@@ -74,7 +74,7 @@ public class GP {
     int TP = 0, FP = 0, TN = 0, FN = 0;
     for (int i = 0; i < data.size(); i++) {
         double[] input = data.get(i);
-        float val = tree.compute(input[0], input[1], input[2], input[3], input[4]);
+        float val = tree.compute(input[0], input[0], input[0], input[0], input[0]);
         val = (float) (1 / (1 + Math.exp(-val))); 
         if (Float.isNaN(val)) val = 0.5f; 
         int predicted = (val >= 0.5f) ? 1 : 0;
@@ -123,7 +123,7 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
         if (this.best == null || pop.get(0).getFitness() > this.best.getFitness()) {
             this.best = pop.get(0).clone();
             //System.out.println("Generation " + i + " Best F1: " + this.best.getFitness());
-            System.out.println("Generation " + i + " Best tree: " + this.best.interpret(best.root, ""));
+            //System.out.println("Generation " + i + " Best tree: " + this.best.interpret(best.root, ""));
         }
 
         ArrayList<SyntaxTree> newPop = new ArrayList<>();
@@ -160,7 +160,7 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
         float TP=0, FP=0, FN=0;
 
         for(int i=0; i<998; i++){
-            float ans = popu.get(i % 50).compute(data[i][0], data[i][1], data[i][2], data[i][3], data[i][3]);
+            float ans = popu.get(i % 50).compute(data[i][0], data[i][0], data[i][0], data[i][0], data[i][0]);
             //System.out.println("ans="+ans);
             if((ans > data[i][0]) && (data[i][4] > data[i][0])){
                 TP += 1;
@@ -174,11 +174,11 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
         }
         float precision = (TP / (TP + FP)) ;
         float recall = TP / (TP + FN);
-        System.out.println("tp="+TP);
-        System.out.println("fp="+FP);
-        System.out.println("fn="+FN);
-        System.out.println("precision="+precision);
-        System.out.println("recall="+recall);
+        // System.out.println("tp="+TP);
+        // System.out.println("fp="+FP);
+        // System.out.println("fn="+FN);
+        // System.out.println("precision="+precision);
+        // System.out.println("recall="+recall);
         float res = 2 *((precision*recall) / (precision+recall));
         if(Float.isNaN(res)) res = 0f;
 
@@ -189,7 +189,7 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
         float TP=0, FP=0, FN=0, TN=0;
 
         for(int i=0; i<998; i++){
-            float ans = popu.get(i % 50).compute(data[i][0], data[i][1], data[i][2], data[i][3], data[i][3]);
+            float ans = popu.get(i % 50).compute(data[i][0], data[i][0], data[i][0], data[i][0], data[i][0]);
             //System.out.println("ans="+ans);
             if((ans > data[i][0]) && (data[i][4] > data[i][0])){
                 TP += 1;
@@ -206,10 +206,10 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
             }
         }
 
-        System.out.println("tp="+TP);
-        System.out.println("fp="+FP);
-        System.out.println("fn="+FN);
-        System.out.println("tn="+TN);
+        // System.out.println("tp="+TP);
+        // System.out.println("fp="+FP);
+        // System.out.println("fn="+FN);
+        // System.out.println("tn="+TN);
         double res = (TP+TN) / (TP + TN + FN + FP);
         if(Double.isNaN(res)) res = 0d;
 
