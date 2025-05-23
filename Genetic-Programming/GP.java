@@ -156,8 +156,8 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
         return res;
     }
 
-    public double F1(){
-        int TP=0, FP=0, FN=0;
+    public float F1(){
+        float TP=0, FP=0, FN=0;
 
         for(int i=0; i<998; i++){
             float ans = popu.get(i % 50).compute(data[i][0], data[i][1], data[i][2], data[i][3], data[i][3]);
@@ -172,23 +172,21 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
                 FN += 1;
             }
         }
-        double precision = TP / (TP + FP) ;
-        double recall = TP / (TP + FN);
-        precision *= 100;
-        recall *= 100;
+        float precision = (TP / (TP + FP)) ;
+        float recall = TP / (TP + FN);
         System.out.println("tp="+TP);
         System.out.println("fp="+FP);
         System.out.println("fn="+FN);
-        System.out.println("precision="+precision*100);
-        System.out.println("recall="+recall*100);
-        double res = 2 *((precision*recall) / (precision+recall));
-        if(Double.isNaN(res)) res = 0d;
+        System.out.println("precision="+precision);
+        System.out.println("recall="+recall);
+        float res = 2 *((precision*recall) / (precision+recall));
+        if(Float.isNaN(res)) res = 0f;
 
         return res;
     }
 
     public double Accuracy(){
-        int TP=0, FP=0, FN=0, TN=0;
+        float TP=0, FP=0, FN=0, TN=0;
 
         for(int i=0; i<998; i++){
             float ans = popu.get(i % 50).compute(data[i][0], data[i][1], data[i][2], data[i][3], data[i][3]);
