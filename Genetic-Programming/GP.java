@@ -14,6 +14,8 @@ public class GP {
     public float accuracy;
     public float f1;
     public ArrayList<SyntaxTree> popu;
+    public long execution;
+    public String file;
 
     public GP(long seed, String file){
         // this.best = new SyntaxTree();
@@ -22,6 +24,7 @@ public class GP {
         this.popualtion = new Vector<>();
         this.seed = seed;
         this.data = new float[998][6];
+        this.file = file;
 
         int row = 0;
         int col = 0;
@@ -110,6 +113,7 @@ private SyntaxTree selection(ArrayList<SyntaxTree> pop, int size, Random rand) {
 }
 
 public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNum, double crossoverRate, double mutationRate, ArrayList<double[]> vals, ArrayList<Integer> valsLabels) {
+    long start = System.nanoTime();
     Random rand = new Random(seed);
     //SyntaxTree best = null;
 
@@ -117,6 +121,7 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
         for (int j = 0; j < pop.size(); j++) {
             fitnessFunction(pop.get(j), vals, valsLabels);
             //System.out.println("Fitness (F1): " + pop.get(j).getFitness());
+            //System.out.println("\r" + pop.get(i).interpret(pop.get(i).root, ""));
         }
 
         pop.sort((t1, t2) -> Double.compare(t2.getFitness(), t1.getFitness()));
@@ -145,6 +150,7 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
         pop = newPop;
         this.popu = pop;
     }
+    this.execution = System.nanoTime() - start;
     return this.best;
 }
 
@@ -214,6 +220,16 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
         if(Double.isNaN(res)) res = 0d;
 
         return res;        
+    }
+
+    public void printReport() throws InterruptedException{
+        System.out.println("=========================================Genetic Programming=========================================");
+        System.out.println("Seed: " + this.seed);
+        System.out.println("Data: " + this.file);
+        System.out.println("Execution time: " + (this.execution/100000) + "(ns)");
+        System.out.println("F1 Score: " + F1());
+        System.out.println("Accuracy: " + Accuracy());
+        //System.err.println("\r " + this.best.interpret(this.best.root, ""));
     }
 }
 

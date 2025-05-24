@@ -22,7 +22,7 @@ public class WilcoxonTest {
         }
     }
 
-    public static double wilcoxonSignedRankTest(double[] x, double[] y) {
+    public double wilcoxonSignedRankTest(double[] x, double[] y) {
         int n = x.length;
         double[] diffs = new double[n];
         double[] absDiffs = new double[n];

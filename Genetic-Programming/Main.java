@@ -4,8 +4,6 @@ import java.util.ArrayList;
 class Main{
     public static void main(String[] args) throws InterruptedException {
         long seed = System.currentTimeMillis();
-        ////////////////////////////////////////////////////////////////
-        System.out.println("GP Train\n");
 
     GP gpTrain = new GP(seed, "BTC_train.csv");
     
@@ -30,15 +28,15 @@ class Main{
     // Run gpTrain
     SyntaxTree bestTree = gpTrain.GeneticProgramming(population, 10, 0.7, 0.2, data, labels);
     
-    // Output results
-    System.out.println("Seed: " + seed);
-    System.out.println("Best Tree:" + bestTree.interpret(bestTree.getRoot(), ""));
-    System.out.println("F1 Score: " + gpTrain.F1());
-    System.out.println("Accuracy: " + gpTrain.Accuracy());
+    gpTrain.printReport();
+    for(int i=0;i<gpTrain.popu.size();i++){
+        System.out.print("\r" + gpTrain.popu.get(i).interpret(gpTrain.popu.get(i).root, ""));
+        Thread.sleep(10); // 500 milliseconds
+    }
+    System.out.println("\rBest tree: " + bestTree.interpret(bestTree.root, ""));
 
 
- System.out.println("\nGP Test\n");
-
+///////////////////////////////////////////////////////////////////////////////////////////////
     GP gpTest = new GP(seed, "BTC_test.csv");
     
     // Initialize population
@@ -63,20 +61,24 @@ class Main{
     bestTree = gpTest.GeneticProgramming(population, 10, 0.7, 0.2, data, labels);
     
     // Output results
-    System.out.println("Seed: " + seed);
-    System.out.println("Best Tree:" + bestTree.interpret(bestTree.getRoot(), ""));
-    System.out.println("F1 Score: " + gpTest.F1());
-    System.out.println("Accuracy: " + gpTest.Accuracy());
-
-    for(int i=0;i<100;i++){
-        //System.out.print("\033[H\033[2J");
-        //System.out.flush();
+    gpTest.printReport();
+     for(int i=0;i<gpTest.popu.size();i++){
         System.out.print("\r" + gpTest.popu.get(i).interpret(gpTest.popu.get(i).root, ""));
-
-        Thread.sleep(100); // 500 milliseconds
+        Thread.sleep(10); // 500 milliseconds
     }
+    System.out.println("\rBest tree: " + bestTree.interpret(bestTree.root, ""));
 
-    
+    System.out.println();
+    double[] x = {gpTrain.Accuracy(), gpTest.Accuracy()};
+    double[] y = {80, 60};
+    WilcoxonTest wt = new WilcoxonTest(x, y);
+
+    double pValue = wt.wilcoxonSignedRankTest(x, y);
+    System.out.println("=========================================Wilcoxon Test=========================================");
+    System.out.println("pValue: "+pValue);
+    System.out.println("Reject Null Hypothesis: " + (pValue < 0.5));
+    if(pValue < 0.5)System.out.println("Thus MLP and GP perform very differenly");
+    if(pValue > 0.5)System.out.println("Thus MLP and GP perform very similalry");
 
     }
 }
