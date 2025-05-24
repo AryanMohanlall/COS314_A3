@@ -27,7 +27,6 @@ public class GP {
         this.file = file;
 
         int row = 0;
-        int col = 0;
         try(Scanner scanner = new Scanner(new File(file))){
             if(scanner.hasNextLine()){
                 scanner.nextLine();
@@ -46,18 +45,6 @@ public class GP {
         }catch(FileNotFoundException e){
             e.printStackTrace();
         }
-    }
-
-    private double fitness(SyntaxTree tree, ArrayList<double[]> data, ArrayList<Integer> labels){
-        int f =0;
-        for(int i=0; i<data.size();i++){
-            double[] input = data.get(i);
-            float val = tree.compute((int) input[0], (int) input[1], (int) input[2], (int) input[3], (int) input[4]);
-            if(Math.round(val) == labels.get(i)){
-                f++;
-            }
-        }
-        return (double) f/data.size();
     }
 
 /*     public void fitnessFunction(SyntaxTree tree, ArrayList<double[]> data){
@@ -92,7 +79,7 @@ public class GP {
         }
     }
 
-    float accuracy = (float) (TP + TN) / (TP + TN + FP + FN);
+    //float accuracy = (float) (TP + TN) / (TP + TN + FP + FN);
     float precision = (TP == 0) ? 0 : (float) TP / (TP + FP);
     float recall = (TP == 0) ? 0 : (float) TP / (TP + FN);
     float f1 = (precision + recall == 0) ? 0 : 2 * (precision * recall) / (precision + recall);
@@ -229,7 +216,6 @@ public SyntaxTree GeneticProgramming(ArrayList<SyntaxTree> pop, int generationNu
         System.out.println("Execution time: " + (this.execution/100000) + "(ns)");
         System.out.println("F1 Score: " + F1());
         System.out.println("Accuracy: " + Accuracy());
-        //System.err.println("\r " + this.best.interpret(this.best.root, ""));
     }
 }
 

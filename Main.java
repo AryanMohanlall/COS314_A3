@@ -14,15 +14,15 @@ class Main{
 
         // Get seed value
         System.out.print("Enter random seed: ");
-        long seed = scanner.nextLong();
-        scanner.nextLine(); // Consume newline
+        long seed = 1783;//scanner.nextLong();
+        //scanner.nextLine(); // Consume newline
 
         // Get file paths
         System.out.print("Enter full path to training file: ");
-        String trainPath = scanner.nextLine().trim();
+        String trainPath = "BTC_train.csv";//scanner.nextLine().trim();
 
         System.out.print("Enter full path to test file: ");
-        String testPath = scanner.nextLine().trim();
+        String testPath = "BTC_test.csv";//scanner.nextLine().trim();
 
         // Load data
         System.out.println("\nLoading training data...");
@@ -45,14 +45,14 @@ class Main{
         System.out.println("Initializing MLP...");
         MLP mlp = new MLP(
                 5,
-                10,
+                18,
                 1,
-                0.01,
+                0.0075,
                 seed);
 
         // Training
-        System.out.println("Training network (1000 epochs)...");
-        mlp.train(trainData, 1000);
+        System.out.println("Training network (1500 epochs)...");
+        mlp.train(trainData, 1500);
 
         // Results
         System.out.println("\nEvaluation Results:");
